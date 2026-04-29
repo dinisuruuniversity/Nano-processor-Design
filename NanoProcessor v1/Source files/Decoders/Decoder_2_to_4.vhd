@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 03/10/2026 10:42:30 AM
+-- Create Date: 02/24/2026 07:58:33 AM
 -- Design Name: 
--- Module Name: Reg - Behavioral
+-- Module Name: Decoder_2_to_4 - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,23 +31,20 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity Reg is
-    Port ( D : in STD_LOGIC_VECTOR (3 downto 0);
-           En : in STD_LOGIC;
-           Clk : in STD_LOGIC;
-           Q : out STD_LOGIC_VECTOR (3 downto 0));
-end Reg;
+entity Decoder_2_to_4 is
+    Port ( I : in STD_LOGIC_VECTOR (1 downto 0);
+           EN : in STD_LOGIC;
+           Y : out STD_LOGIC_VECTOR (3 downto 0));
+end Decoder_2_to_4;
 
-architecture Behavioral of Reg is
+architecture Behavioral of Decoder_2_to_4 is
 
 begin
-process (Clk) begin
-    if (rising_edge(Clk)) then -- respond when clock rises
-        if En = '1' then -- Enable should be set
-        Q <= D;
-        end if;
-    end if;
-end process;
+
+    Y(0) <= NOT(I(0)) AND NOT(I(1)) AND EN;
+    Y(1) <= I(0) AND NOT(I(1)) AND EN;
+    Y(2) <= NOT(I(0)) AND I(1) AND EN;
+    Y(3) <= I(0) AND I(1) AND EN;
 
 
 end Behavioral;
