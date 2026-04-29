@@ -19,26 +19,34 @@ entity Instruction_Decoder is
 end entity Instruction_Decoder;
 
 architecture Behavioral of Instruction_Decoder is
-    signal Opcode : std_logic_vector(1 downto 0);     -- Instruction opcode
+    signal Opcode : std_logic_vector(1 downto 0);     -- Instruction opcode--store the command part of the instruction
 begin
-    Opcode <= Instruction(11 downto 10);              -- Extract opcode from instruction
+    Opcode <= Instruction(11 downto 10);              -- Extracts the top 2 bits of the instruction
     
-    decode: process(Opcode, Register_Value_For_Jump, Instruction)
+    decode: process(Opcode, Register_Value_For_Jump, Instruction)--the sensitivity list
+    --opcode -if instruction type chnages change control signals immediately
+    --register_value_for_jump- flip jump_enable signal
+    --instruction - if 12 bit instruction changes--output must updates
+    
+    
     begin
-        -- Default values to prevent latches
+    
+    
+        -- Default assignments to prevent latch
         Jump_Enable      <= '0';                      -- Disable jump by default
-        Immediate_Value  <= "0000";                   -- Zero immediate value 
+        Immediate_Value  <= (others => '0');                   -- Zero immediate value 
         Load_Select      <= '0';                      -- Default to immediate load mode
-        Register_Enable  <= "000";                    -- No register enabled by default
+        Register_Enable  <= (others => '0');                    -- No register enabled by default
         Operation_Select <= '0';                      -- Default to ADD operation
-        Register_Select_A <= "000";                   -- Default to register R0
-        Register_Select_B <= "000";                   -- Default to register R0
-        Jump_Address     <= "000";                    -- Default jump to address 0
+        Register_Select_A <= (others => '0');                   -- Default to register R0
+        Register_Select_B <= (others => '0');                   -- Default to register R0
+        Jump_Address     <= (others => '0');                    -- Default jump to address 0
         
+        --code looks at the opcode and chooses one of four paths:
         case Opcode is
             when MOVI_OP =>                           -- Move Immediate
-                Immediate_Value <= Instruction(3 downto 0);
-                Load_Select     <= '0';               -- Immediate load mode
+                Immediate_Value <= Instruction(3 downto 0);--grabs the last 4 bbits as a constant number
+                Load_Select     <= '0';               -- use immediate value
                 Register_Enable <= Instruction(9 downto 7);
                 
             when ADD_OP =>                            -- Add operation
@@ -59,7 +67,8 @@ begin
                 Register_Select_A <= Instruction(9 downto 7);
                 Register_Enable   <= "000";           -- No register writes
                 
-                if Register_Value_For_Jump = "0000" then
+                -- Check if the value is zero
+                if Register_Value_For_Jump = (Register_Value_For_Jump'range => '0') then
                     Jump_Enable   <= '1';             -- Enable jump
                     Jump_Address  <= Instruction(2 downto 0);
                 else
@@ -67,6 +76,7 @@ begin
                 end if;
                 
             when others =>
+            null;
                 -- All outputs already have default values
         end case;
     end process decode;
