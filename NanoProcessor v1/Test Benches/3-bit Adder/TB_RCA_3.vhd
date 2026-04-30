@@ -1,4 +1,4 @@
-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 -- Company: 
 -- Engineer: 
 -- 
@@ -61,34 +61,35 @@ begin
             C_out => C_out
         );
 
-    -- Stimulus process
+    -- Stimulus process using index number pattern
     process
     begin
-
-        -- Test 1: 0 + 0 = 0
-        A <= "000"; B <= "000"; C_in <= '0';
-        wait for 10 ns;
-
-        -- Test 2: 1 + 1 = 2
-        A <= "001"; B <= "001"; C_in <= '0';
+        
+        -- Using index: 240618 → binary: 111010101111101010
+        -- Grouped into 3-bit chunks
+        
+        -- From index number 
+        -- Test 1: 5 + 2 = 7
+        A <= "101"; B <= "010"; C_in <= '0';
         wait for 10 ns;
         
-        -- Test 3: 3 + 2 = 5
+        -- Test 2: 3 + 2 = 5
         A <= "011"; B <= "010"; C_in <= '0';
         wait for 10 ns;
 
-        -- Test 4: 7 + 1 = 8 (overflow)
+        -- Test 3: 7 + 1 = 8 (overflow)
         A <= "111"; B <= "001"; C_in <= '0';
         wait for 10 ns;
 
-        -- Test 5: 5 + 3 = 8 (overflow)
+        -- Test 4: 5 + 3 = 8 (overflow)
         A <= "101"; B <= "011"; C_in <= '0';
         wait for 10 ns;
 
-        -- Test 6: with carry input (3 + 2 + 1 = 6)
+        -- Test 5: with carry input (3 + 2 + 1 = 6)
         A <= "011"; B <= "010"; C_in <= '1';
         wait for 10 ns;
-
+        
+        
         wait;
 
     end process;

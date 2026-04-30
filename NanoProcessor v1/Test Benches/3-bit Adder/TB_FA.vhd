@@ -45,6 +45,7 @@ SIGNAL A, B, C_in : std_logic;
 SIGNAL C_out, S : std_logic;
 
 begin
+-- Instantiate the Unit Under Test (UUT)
 UUT : FA PORT MAP(
     A => A,
     B => B,
@@ -52,36 +53,34 @@ UUT : FA PORT MAP(
     S => S,
     C_out => C_out);
 
-    process begin
-    A<= '0';
-    B<= '0';
-    C_in<= '0';
+    process 
+    begin
+    -- Using index number 240618 → binary: 111010101111101010
+    -- Applying 3 bits at a time to A, B, C_in
 
+    -- 1st group: 010
+    A <= '0'; B <= '1'; C_in <= '0';
     WAIT FOR 100 ns;
-    C_in<= '1';
 
+    -- 2nd group: 101
+    A <= '1'; B <= '0'; C_in <= '1';
     WAIT FOR 100 ns;
-    B<= '1';
-    C_in<= '0';
 
+    -- 3rd group: 111
+    A <= '1'; B <= '1'; C_in <= '1';
     WAIT FOR 100 ns;
-    C_in<= '1';
-    
+
+    -- 4th group: 101
+    A <= '1'; B <= '0'; C_in <= '1';
     WAIT FOR 100 ns;
-    A<= '1';
-    B<= '0';
-    C_in<= '0';
-    
+
+    -- 5th group: 010
+    A <= '0'; B <= '1'; C_in <= '0';
     WAIT FOR 100 ns;
-    C_in<= '1';
-    
+
+    -- 6th group: 111
+    A <= '1'; B <= '1'; C_in <= '1';
     WAIT FOR 100 ns;
-    B<= '1';
-    C_in<= '0';
-    
-    WAIT FOR 100 ns;
-    C_in<= '1';
-    
 
     WAIT;
     end process;
