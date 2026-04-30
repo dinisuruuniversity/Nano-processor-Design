@@ -65,7 +65,10 @@ begin
     -- Stimulus process
     process
     begin
-
+        
+         -- Index-based test cases using 240618
+        -- Binary: 111010101111101010 → grouped into 4 bits
+        
         -- Test 1: 0 + 0 = 0
         A <= "0000"; B <= "0000"; C_in <= '0';
         wait for 10 ns;
@@ -89,6 +92,14 @@ begin
         -- Test 6: with carry-in (3 + 2 + 1 = 6)
         A <= "0011"; B <= "0010"; C_in <= '1';
         wait for 10 ns;
+        
+        -- From index number 
+        A <= "1010"; B <= "1111"; C_in <= '0'; --overflow
+        wait for 10 ns;
+        
+        A <= "1010"; B <= "1110"; C_in <= '0'; --overflow
+        wait for 10 ns;
+        
 
         wait;
 

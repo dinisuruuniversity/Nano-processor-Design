@@ -63,7 +63,31 @@ uut: Add_Sub_4_bit
 
     process
     begin
-
+        
+        -- Index-based test cases using 240618
+        -- Binary: 111010101111101010 → grouped into 4 bits
+        
+        -- From index: 1010 + 1111
+        -- 10 + 15 = 25 → overflow
+        A_AS <= "1010"; B_AS <= "1111"; CTRL <= '0';
+        wait for 10 ns;
+        
+        -- From index: 1010 - 1111
+        -- 10 - 15 = -5 → negative (overflow possible depending on design)
+        A_AS <= "1010"; B_AS <= "1111"; CTRL <= '1';
+        wait for 10 ns;
+        
+        -- From index: 1010 + 1110
+        -- 10 + 14 = 24 → overflow
+        A_AS <= "1010"; B_AS <= "1110"; CTRL <= '0';
+        wait for 10 ns;
+        
+        -- From index: 1010 - 1110
+        -- 10 - 14 = -4
+        A_AS <= "1010"; B_AS <= "1110"; CTRL <= '1';
+        wait for 10 ns;
+        
+        --other basic combinations
         -- 3 + 2 = 5
         A_AS <= "0011"; B_AS <= "0010"; CTRL <= '0';
         wait for 10 ns;
