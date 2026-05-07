@@ -9,7 +9,7 @@ entity NanoProcessor is
     Port (
         Clk   : in  STD_LOGIC;                       -- 100 MHz board clock
         Reset : in  STD_LOGIC;                        -- Active-high reset (btnC)
-        LED   : out STD_LOGIC_VECTOR(3 downto 0);    -- Result: R1 value on LEDs
+        LED   : out STD_LOGIC_VECTOR(15 downto 0);    -- Result: R1 value on LEDs
         seg   : out STD_LOGIC_VECTOR(6 downto 0);    -- 7-segment cathodes
         an    : out STD_LOGIC_VECTOR(3 downto 0)     -- 7-segment anodes
     );
@@ -24,6 +24,7 @@ architecture Structural of NanoProcessor is
     component Slow_Clk is
         Port (
             Clk_in  : in  STD_LOGIC;
+            Reset   : in STD_LOGIC;
             Clk_out : out STD_LOGIC
         );
     end component;
@@ -176,6 +177,7 @@ begin
     Slow_Clock_Inst : Slow_Clk
         port map (
             Clk_in  => Clk,
+            Reset=>Reset,
             Clk_out => slow_clk_sig
         );
 
@@ -331,8 +333,14 @@ begin
     an <= "1110";
 
     -----------------------------------------------------------------------
-    -- 13. LED output  (R7 value → 4 rightmost LEDs)
-    -----------------------------------------------------------------------
-    LED <= reg_outputs(7);
+ -- Keep R7 result on the first 4 LEDs (0-3)
+        LED(3 downto 0) <= reg_outputs(7);  
+        
+        -- Set unused LEDs (4-13) to zero to avoid "ghosting"
+        LED(13 downto 4) <= (others => '0'); 
+        
+        -- Map flags to the far-left LEDs
+        LED(14) <= alu_zero;      -- Zero flag on LED 14
+        LED(15) <= alu_overflow;  -- Overflow flag on LED 15
 
 end Structural;
