@@ -37,18 +37,18 @@ architecture Behavioral of Comparator_4_bit is
 begin
     Compare_Process: process(Input_A, Input_B)
     begin
-        if SIGNED(Input_A) = SIGNED(Input_B) then
-            Equal_Flag        <= '1';
-            LessThan_Flag     <= '0';
-            GreaterThan_Flag  <= '0';
-        elsif SIGNED(Input_A) < SIGNED(Input_B) then
-            Equal_Flag        <= '0';
-            LessThan_Flag     <= '1';
-            GreaterThan_Flag  <= '0';
-        else
-            Equal_Flag        <= '0';
-            LessThan_Flag     <= '0';
-            GreaterThan_Flag  <= '1';
-        end if;
+if UNSIGNED(Input_A) = UNSIGNED(Input_B) then
+        Equal_Flag        <= '1';
+        LessThan_Flag     <= '0';
+        GreaterThan_Flag  <= '0';
+    elsif UNSIGNED(Input_A) < UNSIGNED(Input_B) then
+        Equal_Flag        <= '0';
+        LessThan_Flag     <= '1';
+        GreaterThan_Flag  <= '0';
+    else
+        Equal_Flag        <= '0';
+        LessThan_Flag     <= '0';
+        GreaterThan_Flag  <= '1';
+    end if;
     end process;
 end Behavioral;
