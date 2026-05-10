@@ -41,35 +41,30 @@ begin
         Register_Select_A <= (others => '0');
         Register_Select_B <= (others => '0');
         Jump_Address      <= (others => '0');
-        
-        --code looks at the opcode and chooses one of four paths:
+
         case Opcode is
-            when MOVI_OP =>                           -- Move Immediate
-                Immediate_Value <= Instruction(3 downto 0);--grabs the last 4 bbits as a constant number
-                Load_Select     <= '0';               -- use immediate value
+            when MOVI_OP =>                                   -- Move Immediate
+                Immediate_Value <= Instruction(3 downto 0);    --grabs the last 4 bbits as a constant number
+                Load_Select     <= '0';                       -- use immediate value
                 Register_Enable <= Instruction(9 downto 7);
-                
-            when ADD_OP =>                            -- Add operation
+            when ADD_OP =>                                    -- Add operation
                 Register_Select_A <= Instruction(9 downto 7);
                 Register_Select_B <= Instruction(6 downto 4);
-                Operation_Select  <= '0';             -- Addition
-                Load_Select       <= '1';             -- Register load mode
+                Operation_Select  <= '0';                     -- Addition
+                Load_Select       <= '1';                     -- Register load mode
                 Register_Enable   <= Instruction(9 downto 7);
-                
-            when NEG_OP =>                            -- NEG Rd  →  Rd ← 0 - Rd
-                Register_Select_A <= "000";           -- R0 (hardwired zero)
+            when NEG_OP =>                                    -- NEG Rd  →  Rd ← 0 - Rd
+                Register_Select_A <= "000";                   -- R0 (hardwired zero)
                 Register_Select_B <= Instruction(9 downto 7); -- Rd to negate
-                Operation_Select  <= '1';             -- Subtraction mode
-                Load_Select       <= '1';             -- Use ALU result
+                Operation_Select  <= '1';                     -- Subtraction mode
+                Load_Select       <= '1';                     -- Use ALU result
                 Register_Enable   <= Instruction(9 downto 7); -- Write back to Rd
-                
-            when JZR_OP =>                            -- Jump if Zero
+            when JZR_OP =>                                    -- Jump if Zero
                 Register_Select_A <= Instruction(9 downto 7);
-                Register_Enable   <= "000";           -- No register writes
-                
-                -- Check if the value is zero
+                Register_Enable   <= "000";                   -- No register writes
+
                 if Register_Value_For_Jump = (Register_Value_For_Jump'range => '0') then
-                    Jump_Enable   <= '1';             -- Enable jump
+                    Jump_Enable   <= '1';                     -- Enable jump
                     Jump_Address  <= Instruction(2 downto 0);
                 else
                     Jump_Enable   <= '0';             -- No jump
