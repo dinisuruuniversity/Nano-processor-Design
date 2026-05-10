@@ -57,7 +57,7 @@ entity NanoProcessor is
     Port (
         Clk   : in  STD_LOGIC;                     -- 100 MHz board clock
         Reset : in  STD_LOGIC;                      -- Active-high reset (btnC)
-        LED   : out STD_LOGIC_VECTOR(15 downto 0);  -- [3:0]=R1, [14]=Zero, [15]=Overflow
+        LED   : out STD_LOGIC_VECTOR(15 downto 0);  -- [3:0]=R7,[11]-EQ, [12]-LT,[13]-GT [14]=Zero, [15]=Overflow
         seg   : out STD_LOGIC_VECTOR(6 downto 0);  -- 7-segment cathodes
         an    : out STD_LOGIC_VECTOR(3 downto 0)   -- 7-segment anodes
     );
