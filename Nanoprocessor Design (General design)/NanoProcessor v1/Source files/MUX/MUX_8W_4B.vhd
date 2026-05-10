@@ -21,16 +21,6 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity MUX_8W_4B is
 port(
     input1  : in STD_LOGIC_VECTOR(3 downto 0);
@@ -42,12 +32,9 @@ port(
     input7  : in STD_LOGIC_VECTOR(3 downto 0);
     input8  : in STD_LOGIC_VECTOR(3 downto 0);
     slt     : in STD_LOGIC_VECTOR(2 downto 0);
-    output  : out STD_LOGIC_VECTOR(3 downto 0)
-);
+    output  : out STD_LOGIC_VECTOR(3 downto 0));
 end MUX_8W_4B;
-
 architecture Behavioral of MUX_8W_4B is
-
 begin
     with slt select
     output <= input1 when "000",
