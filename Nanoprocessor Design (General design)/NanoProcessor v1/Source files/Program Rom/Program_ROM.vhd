@@ -39,9 +39,9 @@ end Program_ROM;
 architecture Behavioral of Program_ROM is
     type rom_type is array (0 to 7) of InstructionWord;
     constant ROM : rom_type := (
-        0 => "101110000001",  -- MOVI R7, 1   ; R7 <= 0001  (bits[9:7]="001"=R1)
+        0 => "101110000001",  -- MOVI R7, 1   ; R7 <= 0001  (bits[9:7]="001"=R7)
         1 => "100100000010",  -- MOVI R2, 2   ; R2 <= 0010  (bits[9:7]="010"=R2)
-        2 => "001110100000",  -- ADD  R7, R2  ; R7 <= R1+R2 (bits[9:7]="001"=R1, bits[6:4]="010"=R2)
+        2 => "001110100000",  -- ADD  R7, R2  ; R7 <= R1+R2 (bits[9:7]="001"=R7, bits[6:4]="010"=R2)
         3 => "100100000011",  -- MOVI R2, 3   ; R2 <= 0011  (bits[9:7]="010"=R2)
         4 => "001110100000",  -- ADD  R7, R2  ; R7 <= R1+R2 (same as addr 2, result = 6)
         5 => "110000000101",  -- JZR  R0, 5   ; halt: loop to addr 5 forever (R0=0 always)
