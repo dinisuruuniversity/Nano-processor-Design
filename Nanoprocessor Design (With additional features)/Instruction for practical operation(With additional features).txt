@@ -1,0 +1,126 @@
+INSTRUCTION MANUAL: NANOPROCESSOR OPERATION
+============================================
+
+1. RESET BUTTON
+---------------
+- Location: Mapped to BTNU (Top button, FPGA Pin U18)
+- Action:
+  - Resets program counter (PC) to 0
+  - Clears all registers (R0-R7) to 0000
+  - Sets flags (Zero, Overflow, Equal, LessThan, GreaterThan) to 0
+
+2. LED AND DISPLAY MAPPING
+--------------------------
+LED Indicators:
+LED     Function           FPGA Pin
+LED3-0  Data_R7            U16, E19, U19, V19
+LED7-4  Not used           W18, U15, U14, V14
+LED15   Overflow Flag      L1
+LED14   Zero Flag          P1
+LED11   Equal Flag         U3
+LED12   LessThan Flag      P3
+LED13   GreaterThan Flag   N3
+
+Seven-Segment Display:
+- Anodes: anode[3:0] controls digits (FPGA Pins U2, U4, V4, W4)
+- Active Digits: 
+  - Rightmost (anode[0] = 0): Displays R7
+  - Others: Display R6 or remain off based on implementation
+- Segments: S_7Seg[6:0] mapped to FPGA Pins W7, W6, U8, V8, U5, V5, U7
+
+3. SAMPLE PROGRAM EXECUTION
+---------------------------
+Program Code (stored in ROM):
+
+Address | Instruction      | Operation
+--------|------------------|-------------------
+0       | MOVI R7, 4       | R7 <- 4
+1       | MOVI R6, 2       | R6 <- 2
+2       | MUL R7, R6       | R7 <- 4 x 2 = 8
+3       | ADD R7, R6       | R7 <- 8 + 2 = 10
+4       | EQ R7, R6        | Compare 10 vs 2 -> EQ=0
+5       | GT R7, R6        | Compare 10 > 2 -> GT=1
+6       | LT R7, R6        | Compare 10 < 2 -> LT=0
+7       | HALT (JZR R0,7)  | Loop at address 7
+
+Step-by-Step Behavior:
+
+Step   R7     R6     LEDs(R7)   Flags (Ovr/Zero/EQ/LT/GT)
+----------------------------------------------------------
+Reset  0000   0000   0000       0/1/0/0/0
+0      0100   0000   0100       0/0/0/0/0
+1      0100   0010   0100       0/0/0/0/0
+2      1000   0010   1000       1/0/0/0/0 (Overflow)
+3      1010   0010   1010       0/0/0/0/0
+4      1010   0010   1010       0/0/0/0/0
+5      1010   0010   1010       0/0/0/0/1
+6      1010   0010   1010       0/0/0/0/1
+7      1010   0010   1010       0/0/0/0/1
+
+4. INSTRUCTION SET (14-bit encoding)
+------------------------------------
+Opcode | Instruction | Format              | Operation
+-------|-------------|---------------------|-------------------
+0110   | MOVI        | MOVI Rd, imm        | Rd <- immediate
+0000   | ADD         | ADD Rd, Rs          | Rd <- Rd + Rs
+0001   | NEG         | NEG Rd              | Rd <- -Rd
+0011   | MUL         | MUL Rd, Rs          | Rd <- Rd x Rs
+1000   | EQ          | EQ Rd, Rs           | Compare for equality
+1001   | GT          | GT Rd, Rs           | Compare greater than
+1010   | LT          | LT Rd, Rs           | Compare less than
+0111   | JZR         | JZR Ra, addr        | Jump if Ra = 0
+
+Encoding:
+- Bits [13:10] = Opcode
+- Bits [9:7] = Register A (destination/jump condition)
+- Bits [6:4] = Register B (source)
+- Bits [3:0] = Immediate value
+
+5. CRITICAL NOTES
+----------------
+Overflow Detection:
+- Occurs for ADD and MUL operations if result exceeds 4-bit signed range (-8 to +7)
+- Example: ADD R7,R6 (8 + 2 = 10) triggers overflow flag
+
+Signed Arithmetic:
+- All operations use signed two's complement representation
+- 4-bit signed range: -8 to +7
+- Example: 1010 binary = -6 decimal
+
+Comparison Operations:
+- EQ: Sets Equal flag if Rd = Rs
+- GT: Sets GreaterThan flag if Rd > Rs
+- LT: Sets LessThan flag if Rd < Rs
+- All comparisons are signed
+
+Display Behavior:
+- R7 value shows on LED3-0 and 7-segment display
+- Negative values: LEDs show two's complement, 7-segment shows hexadecimal
+- Example: 1010 (-6) shows as 'A' on 7-segment
+
+6. OPERATIONAL INSTRUCTIONS
+---------------------------
+Programming the FPGA:
+1. Generate .bit file in Vivado
+2. Program BASYS3 board
+3. Verify constraints match provided .xdc file
+
+Testing Procedure:
+1. Press Reset (BTNU) before execution
+2. Observe LED3-0 (R7 value)
+3. Monitor flag LEDs (LED15-LED11)
+4. Watch 7-segment display for hexadecimal output
+
+Troubleshooting:
+- Unexpected Flags: Press Reset before starting
+- Display Issues: Check anode[0] activation for R7 display
+- No Multiplication: Ensure MUL instruction (opcode 0011) is supported in ALU
+
+7. EXPECTED RESULTS
+-------------------
+After running the program:
+- Final R7 value: 1010 binary (10 decimal or -6 in signed)
+- LED3-0: 1010
+- 7-Segment: Shows 'A'
+- Flags: GT=1 (from comparison at address 5)
+- Program counter: Loops at address 7 (HALT state)
