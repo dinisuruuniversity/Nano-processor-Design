@@ -22,16 +22,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use work.BusDefinitions.all;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity Load_Selector is
     port(
         registerValue   : in DataBus;
@@ -40,9 +30,7 @@ entity Load_Selector is
         outValue        : out DataBus
     );
 end Load_Selector;
-
 architecture Behavioral of Load_Selector is
-
 component MUX_2W_4B
     port(
         input1      : in STD_LOGIC_VECTOR(3 downto 0);
@@ -51,14 +39,11 @@ component MUX_2W_4B
         output      : out STD_LOGIC_VECTOR(3 downto 0)
     );
 end component;
-
 begin
-
    DataSourceMux : MUX_2W_4B Port Map(
         input1 => immediateValue, -- when lSlt = '0', use immediateValue
         input2 => registerValue, -- when lSlt = '1', use registerValue
         slt => lSlt,
         output => outValue
    );
-
 end Behavioral;
